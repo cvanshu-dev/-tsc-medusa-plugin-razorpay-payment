@@ -31,9 +31,8 @@ import {
   StoreCart,
   CustomerDTO,
   HttpTypes,
-} from "@medusajs/types";
-
-import { Logger } from "@medusajs/medusa";
+  Logger,
+} from "@medusajs/framework/types";
 
 import {
   ErrorCodes,
@@ -88,7 +87,7 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
     super(container, options);
 
     this.options_ = options;
-    this.logger = container.logger as Logger;
+    this.logger = container.logger;
 
     this.container_ = container;
     this.options_ = options;
