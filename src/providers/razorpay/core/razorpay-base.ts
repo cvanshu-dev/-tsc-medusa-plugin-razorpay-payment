@@ -88,8 +88,8 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
 
     this.options_ = options;
     this.logger = container.logger || {
-      debug: console.log,
-      info: console.log,
+      debug: console.debug,
+      info: console.info,
       warn: console.warn,
       error: console.error,
     } as Logger;
