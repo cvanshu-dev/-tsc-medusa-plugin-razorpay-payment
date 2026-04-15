@@ -87,7 +87,12 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
     super(container, options);
 
     this.options_ = options;
-    this.logger = container.logger;
+    this.logger = container.logger || {
+      debug: console.log,
+      info: console.log,
+      warn: console.warn,
+      error: console.error,
+    } as Logger;
 
     this.container_ = container;
     this.options_ = options;
@@ -483,7 +488,7 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
           razorpayCustomer?.contact ?? cart.billing_address?.phone;
 
         if (!phoneNumber) {
-          const e = new MedusaError(
+          throw new MedusaError(
             MedusaError.Types.INVALID_DATA,
             "no phone number",
             MedusaError.Codes.CART_INCOMPATIBLE_STATE
@@ -493,16 +498,16 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
           ...intentRequest,
         });
       } catch (e) {
-        new MedusaError(
+        throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
-          e,
+          (e as Error).message ?? String(e),
           MedusaError.Codes.UNKNOWN_MODULES
         );
       }
     } catch (e) {
-      new MedusaError(
+      throw new MedusaError(
         MedusaError.Types.INVALID_DATA,
-        e,
+        (e as Error).message ?? String(e),
         MedusaError.Codes.UNKNOWN_MODULES
       );
     }
@@ -685,9 +690,9 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
           }
         }
       } catch (e) {
-        new MedusaError(
+        throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
-          e,
+          (e as Error).message ?? String(e),
           MedusaError.Codes.UNKNOWN_MODULES
         );
       }
@@ -708,7 +713,7 @@ abstract class RazorpayBase extends AbstractPaymentProvider {
       try {
         intent = await this.razorpay_.orders.fetch(id);
       } catch (e) {
-        new MedusaError(
+        throw new MedusaError(
           MedusaError.Types.INVALID_DATA,
           "An error occurred in retrievePayment",
           MedusaError.Codes.UNKNOWN_MODULES
